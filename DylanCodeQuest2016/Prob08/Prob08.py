@@ -1,21 +1,27 @@
-from math import *
-#Prob08 - code
+from operator import attrgetter
 
-#alphabet = "abcdefghijklmnopqrstuvwxyz "
+f = open('Prob08in.txt', 'r')
+numTests = int(f.readline())
 
-inputFile = open("Prob08.in.txt")
-cases = int(inputFile.readline())
 
-for i in range(cases):
-    songNumber = int(inputFile.readline())
-    songList = {}
-    for i in range(songNumber):
-        songDesc = inputFile.readline().split(" - ")
-        if songDesc[1].strip("\n") in songList:
-            songList[songDesc[1].strip("\n")] += [songDesc[0]]
-        else:
-            songList[songDesc[1].strip("\n")] = [songDesc[0]]
-    sortedKeys = sorted(iter(songList.keys()))
-    for band in sortedKeys:
-        for song in songList[band]:
-            print(song+" - "+band)
+class Song(object):
+    def __init__(self, fullLine):
+        self.fullTitle = fullLine.strip('\n')
+        self.arrayNames = fullLine.split(' - ')
+        self.title = self.arrayNames[0]
+        self.artist = ((self.arrayNames[1]).replace('The ','')).lower()
+        ##print(repr((self.fullTitle, self.title, self.artist)))
+    def __repr__(self):
+        return repr((self.fullTitle, self.title, self.artist))
+
+for i in range(numTests): 
+    songs = []
+    numSongs = int(f.readline())
+    for k in range(numSongs):
+        songs.append(Song(f.readline()))
+    songs.sort(key=attrgetter('artist', 'title'))
+    for song in songs:
+        print(song.fullTitle)
+    
+        
+f.close()
